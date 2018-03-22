@@ -6,6 +6,8 @@ package notesDBConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 /**
@@ -75,6 +77,36 @@ public class NotesDBConnection
 			e.printStackTrace();
 		}
 		return toReturn;
+	}
+
+	public String getNotes()
+	{
+		String sql = "SELECT * FROM note";
+		String results = "numer | notatka";
+		String resultFormatString = "%s | %s";
+		try
+		{
+			PreparedStatement prst = myConnection.prepareStatement(sql);
+			ResultSet rs = prst.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while(rs.next())
+			{
+				results += "\n";
+				String[] rowdata = new String[rsmd.getColumnCount()];
+				for(int i = 0; i < rsmd.getColumnCount(); ++i)
+				{
+					rowdata[i] = rs.getString(i + 1);
+					// System.out.println("rowdata[" + i + "]: " + rowdata[i]);
+				}
+				results += String.format(resultFormatString,
+						(Object[]) rowdata);
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return results;
 	}
 
 	/**

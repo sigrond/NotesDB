@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import notesDBConnection.NotesDBConnection;
@@ -22,11 +22,11 @@ public class NotesDBGUI
 {
 
 	private JFrame frame;
-	private JTable table;
 	private JTextField textField;
 	private JButton btnDodaj;
 	private NotesDBConnection dbc = null;
 	private JLabel lblStatus;
+	private JTextArea textArea;
 
 	/**
 	 * Launch the application.
@@ -77,22 +77,27 @@ public class NotesDBGUI
 		lblStatus.setBounds(164, 11, 96, 14);
 		frame.getContentPane().add(lblStatus);
 
+		textArea = new JTextArea();
+		textArea.setBounds(10, 34, 414, 170);
+		frame.getContentPane().add(textArea);
+
 		JButton btnPocz = new JButton("Po\u0142\u0105cz");
 		btnPocz.addMouseListener(new MouseAdapter()
 		{
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
-				dbc = new NotesDBConnection();
-				lblStatus.setText(dbc.status);
+				if(dbc == null)
+				{
+					dbc = new NotesDBConnection();
+					lblStatus.setText(dbc.status);
+				}
+				String t = dbc.getNotes();
+				textArea.setText(t);
 			}
 		});
 		btnPocz.setBounds(296, 7, 89, 23);
 		frame.getContentPane().add(btnPocz);
-
-		table = new JTable();
-		table.setBounds(20, 36, 365, 157);
-		frame.getContentPane().add(table);
 
 		textField = new JTextField();
 		textField.setBounds(21, 216, 294, 20);
@@ -109,10 +114,13 @@ public class NotesDBGUI
 				if(dbc != null)
 				{
 					dbc.addNote(str);
+					String t = dbc.getNotes();
+					textArea.setText(t);
 				}
 			}
 		});
 		btnDodaj.setBounds(335, 215, 89, 23);
 		frame.getContentPane().add(btnDodaj);
+
 	}
 }

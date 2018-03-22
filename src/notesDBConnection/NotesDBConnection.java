@@ -5,6 +5,7 @@ package notesDBConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -43,6 +44,39 @@ public class NotesDBConnection
 		status = "chyba dzia³a";
 	}
 
+	public boolean addNote(String note)
+	{
+		String sql = "INSERT INTO note (NAPIS) values (?)";
+		boolean toReturn = false;
+		try
+		{
+			PreparedStatement prst = myConnection.prepareStatement(sql);
+			prst.setString(1, note);
+			toReturn = prst.executeUpdate() == 1;
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+
+	public boolean createTable()
+	{
+		String sql = "CREATE TABLE note (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAPIS VARCHAR(255))";
+		boolean toReturn = false;
+		try
+		{
+			PreparedStatement prst = myConnection.prepareStatement(sql);
+			toReturn = prst.executeUpdate() == 1;
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
+
 	/**
 	 * @param args
 	 */
@@ -51,6 +85,13 @@ public class NotesDBConnection
 		// TODO Auto-generated method stub
 		NotesDBConnection NDBC = new NotesDBConnection();
 		System.out.println("chyba dzia³a");
+		boolean response = NDBC.addNote("test note");
+		System.out.println("nie by³o crasha: " + response);
+		if(!response)
+		{
+			response = NDBC.createTable();
+			System.out.println("create table response: " + response);
+		}
 	}
 
 }

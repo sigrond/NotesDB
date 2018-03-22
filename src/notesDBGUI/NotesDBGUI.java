@@ -25,7 +25,7 @@ public class NotesDBGUI
 	private JTable table;
 	private JTextField textField;
 	private JButton btnDodaj;
-	private NotesDBConnection dbc;
+	private NotesDBConnection dbc = null;
 	private JLabel lblStatus;
 
 	/**
@@ -100,6 +100,18 @@ public class NotesDBGUI
 		textField.setColumns(10);
 
 		btnDodaj = new JButton("Dodaj");
+		btnDodaj.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				String str = textField.getText();
+				if(dbc != null)
+				{
+					dbc.addNote(str);
+				}
+			}
+		});
 		btnDodaj.setBounds(335, 215, 89, 23);
 		frame.getContentPane().add(btnDodaj);
 	}
